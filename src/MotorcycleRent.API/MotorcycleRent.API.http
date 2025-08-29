@@ -1,0 +1,9 @@
+@MotorcycleRent.API_HostAddress = http://localhost:5185
+
+GET {{MotorcycleRent.API_HostAddress}}/api/test/
+Accept: application/json
+
+###
+
+POST {{MotorcycleRent.API_HostAddress}}/entregadores/
+Accept: application/json
