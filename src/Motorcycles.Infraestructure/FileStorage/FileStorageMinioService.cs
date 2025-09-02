@@ -10,6 +10,7 @@ public class FileStorageMinioService : IFileStorageService
 {
     private readonly IMinioClient _minioClient;
     private const string BucketName = "cnh-imgs";
+    private const string ContentType = "image/png";
 
     public FileStorageMinioService(string endpoint, string accessKey, string secretKey) 
     {
@@ -21,31 +22,33 @@ public class FileStorageMinioService : IFileStorageService
         _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(BucketName));
     }
 
-    public async Task<string> UploadPhotoCnh(Stream stream, string filename, int size, string contentType)
+    public async Task<string> UploadPhotoCnh(string cnhImage)
     {
-        // Verificar se o bucket existe, se não, criar
-        var bucketExistsArgs = new BucketExistsArgs()
-            .WithBucket(BucketName);
-        bool bucketExists = await _minioClient.BucketExistsAsync(bucketExistsArgs);
 
-        if (!bucketExists)
-        {
-            var makeBucketArgs = new MakeBucketArgs()
-                .WithBucket(BucketName);
-            await _minioClient.MakeBucketAsync(makeBucketArgs);
-        }
+        // Validar tamanho (máximo 5MB para CNH)
+        //if (formFile.Length > 5 * 1024 * 1024)
+        //    throw new NotFoundException("Imagem muito grande. Tamanho máximo: 5MB");
 
-        
+        // Processar imagem
+        string fileName = $"cnh_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString()[..8]}.png";
+        if (cnhImage.Contains(','))
+            cnhImage = cnhImage.Split(',')[1];
+
+        // Converter base64 para bytes
+        var bytes = Convert.FromBase64String(cnhImage);
+
+        using var stream = new MemoryStream(bytes);
+
         var putObjectArgs = new PutObjectArgs()
                     .WithBucket(BucketName)
-                    .WithObject(filename)
+                    .WithObject(fileName)
                     .WithStreamData(stream)
-                    .WithObjectSize(size)
-                    .WithContentType(contentType);
+                    .WithObjectSize(bytes.Length)
+                    .WithContentType(ContentType);
 
         await _minioClient.PutObjectAsync(putObjectArgs);
 
-        return $"{BucketName}/{filename}";
+        return $"{BucketName}/{fileName}";
     }
 
     public async Task<Stream> GetImageAsync(string objectName)

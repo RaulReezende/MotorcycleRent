@@ -1,19 +1,13 @@
 ﻿using Motorcycles.Domain.Abstractions.Messaging;
-using Motorcycles.Infraestructure.RabbitMq;
 using RabbitMQ.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace Motorcycles.Application.Messaging;
 
-public class Publisher(RabbitMqConnection rabbitMqConnection) : IMessagePublisher
+public class Publisher(IRabbitMqConnection rabbitMqConnection) : IMessagePublisher
 {
-    private readonly RabbitMqConnection _rabbitMqConnection = rabbitMqConnection;
+    private readonly IRabbitMqConnection _rabbitMqConnection = rabbitMqConnection;
     public async Task PublishAsync<T>(T message, string topic) where T : class
     {
         var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));

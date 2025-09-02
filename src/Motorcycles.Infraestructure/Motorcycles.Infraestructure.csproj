@@ -15,10 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Abstractions\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Motorcycles.Application\Motorcycles.Application.csproj" />
     <ProjectReference Include="..\Motorcycles.Domain\Motorcycles.Domain.csproj" />
   </ItemGroup>
 

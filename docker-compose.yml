@@ -1,11 +1,11 @@
 version: '3.9'
 
 services:
-  motorcycleRent-api:
+  motorcyclerent-api:
     build:
       context: .
-      dockerfile: src/MotorcycleRent.API/Dockerfile
-    container_name: motorcycleRent-api
+      dockerfile: src/motorcycleRent.API/Dockerfile
+    container_name: motorcyclerent-api
     ports:
       - "5000:5000"
       - "8001:8001"
@@ -27,7 +27,7 @@ services:
       minio:
         condition: service_healthy
     networks:
-      - motorcycleRent-network
+      - motorcyclerent-network
 
   postgres:
     image: postgres:15-alpine
@@ -41,7 +41,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - motorcycleRent-network
+      - motorcyclerent-network
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
@@ -58,7 +58,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     networks:
-      - motorcycleRent-network
+      - motorcyclerent-network
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 5s
@@ -78,7 +78,7 @@ services:
     volumes:
       - minio_data:/data
     networks:
-      - motorcycleRent-network
+      - motorcyclerent-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 5s
@@ -90,5 +90,5 @@ volumes:
   minio_data:
 
 networks:
-  motorcycleRent-network:
+  motorcyclerent-network:
     driver: bridge

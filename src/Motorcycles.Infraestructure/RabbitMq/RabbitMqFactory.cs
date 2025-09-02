@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Motorcycles.Domain.Abstractions.Messaging;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Motorcycles.Infraestructure.RabbitMq;
 
-public class RabbitMqConnection : IDisposable
+public class RabbitMqConnection : IRabbitMqConnection, IDisposable
 {
     private readonly IConfiguration _configuration;
     private readonly IConnection _connection;

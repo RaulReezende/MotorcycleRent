@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Motorcycles.Domain.Abstractions.Messaging;
 using Motorcycles.Domain.Abstractions.Repositories;
 using Motorcycles.Domain.Abstractions.Storage;
 using Motorcycles.Infraestructure.FileStorage;
@@ -17,7 +18,7 @@ public static class DependencyInjection
 
         service.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connection));
 
-        service.AddSingleton<RabbitMqConnection>();
+        service.AddSingleton<IRabbitMqConnection, RabbitMqConnection>();
 
         service.AddSingleton<IFileStorageService>(provider =>
            new FileStorageMinioService(

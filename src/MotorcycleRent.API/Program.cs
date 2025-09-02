@@ -6,14 +6,10 @@ using Motorcycle.Consumer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services
-    .AddInfraestructure(builder.Configuration)
     .AddApplication()
+    .AddInfraestructure(builder.Configuration)
     .AddConsumer();
-
-
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
