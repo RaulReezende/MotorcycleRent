@@ -19,17 +19,17 @@ jobs:
         dotnet-version: '9.0.x'
         
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet ./MotorcycleRent.sln restore
       
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ./MotorcycleRent.sln --no-restore
       
     - name: Run tests
       run: dotnet test --no-build --verbosity normal
       
     - name: Generate coverage report
       run: |
-        dotnet test --collect:"XPlat Code Coverage" --results-directory:"TestResults"
+        dotnet test ./MotorcycleRent.sln --collect:"Code Coverage" --results-directory:"TestResults"
         
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
