@@ -19,7 +19,7 @@ jobs:
         dotnet-version: '9.0.x'
         
     - name: Restore dependencies
-      run: dotnet ./MotorcycleRent.sln restore
+      run: dotnet restore ./MotorcycleRent.sln
       
     - name: Build
       run: dotnet build ./MotorcycleRent.sln --no-restore
