@@ -14,7 +14,7 @@ public class MotorCyclesController(IMotorCycleService motorCycleService) : Contr
     [HttpPost]
     public async Task<IActionResult> CreateMotorCycle([FromBody] CreateMotorcycleRequestDto motorCycleRequest)
     {
-        await _motorCycleService.CreateMotorCyrcle(motorCycleRequest);
+        await _motorCycleService.CreateMotorCycle(motorCycleRequest);
         return Created();
     }
 

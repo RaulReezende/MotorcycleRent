@@ -123,6 +123,21 @@ public class DeliveryManServiceTest
             .Should().NotThrowAsync();
     }
 
+    [Fact]
+    public async Task UpdateCnhPhotoDeliveryMan_WhenNotDeliveryManExists_ShouldReturnError()
+    {
+        //Arrange
+        var cnhImageBase64 = new CNHImageRequestDto { ImagemCnh = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" };
+        var deliveryMan = DeliveryManBuilder.Create().Build();
+        _deliveryManRepositoryMock
+            .Setup(repo => repo.GetByIdentifierAsync(It.IsAny<string>()))
+            .ReturnsAsync((DeliveryMan?)null);
+
+        // Act & Assert
+        await _deliveryManService.Invoking(s => s.UpdateCnhPhotoDeliveryMan(deliveryMan.Identifier, cnhImageBase64))
+            .Should().ThrowAsync<NotFoundException>();
+    }
+
     private void SetupForSucess()
     {
         _deliveryManRepositoryMock

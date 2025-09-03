@@ -21,6 +21,6 @@ public class DeliveryManBuilder
         CNH_Number = "12908371",
         CNH_Type = "A",
     };
-    public static DeliveryManBuilder Create() => new ();
+    public static DeliveryManBuilder Create() => new();
     public DeliveryMan Build() => _deliveryMan;
 }

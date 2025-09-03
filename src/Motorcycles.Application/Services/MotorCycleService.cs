@@ -26,7 +26,7 @@ public sealed class MotorCycleService(
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMessageService _messageService = messageService;
     private const int YearMessaging = 2024;
-    public async Task CreateMotorCyrcle(CreateMotorcycleRequestDto motorCycleRequest)
+    public async Task CreateMotorCycle(CreateMotorcycleRequestDto motorCycleRequest)
     {
         // validator
         await _validator.ValidateAndThrowAsync(motorCycleRequest);

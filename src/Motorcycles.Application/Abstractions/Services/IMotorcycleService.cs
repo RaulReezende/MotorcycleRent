@@ -5,7 +5,7 @@ namespace Motorcycles.Application.Abstractions.Services;
 
 public interface IMotorCycleService
 {
-    Task CreateMotorCyrcle(CreateMotorcycleRequestDto motorCycleRequest);
+    Task CreateMotorCycle(CreateMotorcycleRequestDto motorCycleRequest);
     Task<IEnumerable<MotorCyclesReponseDto>> GetMotorCycles(string? plate);
     Task<MotorCyclesReponseDto> GetMotorCycleByIdentifier(string identifier);
     Task UpdatePlateMotorcycle(string id, UpdatePlateMotorcycleRequestDto requestDto);
