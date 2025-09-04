@@ -1,6 +1,7 @@
 ﻿
 using FluentAssertions;
 using FluentValidation;
+using FluentValidation.Results;
 using Moq;
 using Motorcycles.Application.Abstractions.Services;
 using Motorcycles.Application.DTOs.Request.DeliveryMan;
@@ -9,6 +10,7 @@ using Motorcycles.Application.Services;
 using Motorcycles.Domain.Abstractions.Repositories;
 using Motorcycles.Domain.Abstractions.Storage;
 using Motorcycles.Domain.Entities;
+using Motorcycles.Domain.Exceptions;
 using Motorcycles.Infraestructure.Repositories;
 using Motorcycles.Tests.Unit.Application.Builders;
 
@@ -35,22 +37,22 @@ public class MotorcycleServiceTest
 
     }
 
-    //[Fact]
+    [Fact]
     public async Task CreateMotorCycle_WhenIsRight_ShouldReturnSucess()
     {
         // Arrange
         var requestDto = CreateMotorcycleRequestDtoBuilder.Create().WithId("moto1").Build();
         var motorcycle = MotorcycleBuilder.Create().Build();
-        _validator
-            .Setup(vali => vali.ValidateAndThrowAsync(requestDto, default))
-            .Returns(Task.CompletedTask);
+        var validationResult = new ValidationResult();
+        _validator.Setup(v => v.ValidateAsync(requestDto, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
 
         _motorcycleRepository
             .Setup(repo => repo.GetByPlateAsync(requestDto.PlateNumber))
             .ReturnsAsync((Motorcycle?)null);
 
         _motorcycleRepository
-            .Setup(repo => repo.CreateAsync(motorcycle))
+            .Setup(repo => repo.CreateAsync(It.IsAny<Motorcycle>()))
             .Returns(Task.CompletedTask);
 
         _unitOfWorkMock
@@ -62,13 +64,43 @@ public class MotorcycleServiceTest
         await _motorcycleService.Invoking(s => s.CreateMotorCycle(requestDto))
             .Should().NotThrowAsync();
 
+        _motorcycleRepository.Verify(
+        repo => repo.CreateAsync(It.Is<Motorcycle>(m =>
+            m.Identifier == requestDto.Identifier &&
+            m.Plate == requestDto.PlateNumber &&
+            m.Year == requestDto.Year &&
+            m.Model == requestDto.Model)),
+        Times.Once);
+
         _unitOfWorkMock.Verify(
         uow => uow.CommitAsync(),
         Times.Once);
 
-        _motorcycleRepository.Verify(
-            repo => repo.CreateAsync(motorcycle),
-            Times.Once);
         // Assert
+    }
+
+    [Fact]
+    public async Task CreateMotorCycle_WhenMotorcycleExist_ShouldReturnError()
+    {
+        // Arrange
+        var requestDto = CreateMotorcycleRequestDtoBuilder.Create().WithId("moto1").Build();
+        var motorcycle = MotorcycleBuilder.Create().Build();
+        var validationResult = new ValidationResult();
+        _validator.Setup(v => v.ValidateAsync(requestDto, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(validationResult);
+
+        _motorcycleRepository
+            .Setup(repo => repo.GetByPlateAsync(requestDto.PlateNumber))
+            .ReturnsAsync(motorcycle);
+
+        // Act & Assert
+        await _motorcycleService.Invoking(s => s.CreateMotorCycle(requestDto))
+            .Should().ThrowAsync<NotFoundException>();
+
+        _motorcycleRepository.Verify(repo => repo.CreateAsync(It.IsAny<Motorcycle>()), Times.Never);
+
+        _unitOfWorkMock.Verify(
+        uow => uow.CommitAsync(),
+        Times.Never);
     }
 }
