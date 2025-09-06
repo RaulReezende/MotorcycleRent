@@ -20,4 +20,10 @@ internal class MotorcycleBuilder
     };
     public static MotorcycleBuilder Create() => new();
     public Motorcycle Build() => _motorcycle;
+
+    public MotorcycleBuilder WithYear(int year)
+    {
+        _motorcycle.Year = year;
+        return this;
+    }
 }

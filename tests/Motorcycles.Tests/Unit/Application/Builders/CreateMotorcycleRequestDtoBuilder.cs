@@ -17,9 +17,9 @@ public class CreateMotorcycleRequestDtoBuilder
 
     public CreateMotorcycleRequestDto Build() => _dto;
 
-    public CreateMotorcycleRequestDtoBuilder WithId(string identifier)
+    public CreateMotorcycleRequestDtoBuilder WithYear(int year)
     {
-        _dto.Identifier = identifier;
+        _dto.Year = year;
         return this;
     }
 }
